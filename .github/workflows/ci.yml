@@ -31,6 +31,7 @@ jobs:
         with:
           PATTERNS: |
             ${{ matrix.package }}/**/*
+            .github/workflows/ci.yml
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
