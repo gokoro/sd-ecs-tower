@@ -1,3 +1,7 @@
+# CAUTION: Build command should be run outside this package directory, meaning project root directory.
+# This is because this package is referencing `attached` package outside here.
+# You can check `.github/workflows/ci.yml` for details.
+
 FROM node:20-slim AS base
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
