@@ -7,6 +7,10 @@
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true
-  }
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@sd-attached/*": ["../sd-attached/src/*"]
+    }
+  },
+  "references": [{ "path": "../sd-attached" }]
 }

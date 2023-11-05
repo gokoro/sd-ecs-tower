@@ -1,3 +1,5 @@
+import type { AppRouter } from '@sd-attached/index.js'
+
 import {
   createTRPCProxyClient,
   createWSClient,
@@ -7,10 +9,8 @@ import {
 } from '@trpc/client'
 import WebSocket from 'ws'
 
-import type { AppRouter } from '../../../sd-attached/src/index.js'
-
-import * as configs from '../../configs/index.js'
-import { attachedEndpoint } from '../../configs/index.js'
+import * as configs from '../configs/index.js'
+import { attachedEndpoint } from '../configs/index.js'
 
 globalThis.WebSocket = WebSocket as any
 
