@@ -1,0 +1,24 @@
+{
+  "name": "@tower/server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@fastify/type-provider-typebox": "^3.5.0",
+    "@grpc/grpc-js": "^1.9.9",
+    "@sinclair/typebox": "^0.31.22",
+    "fastify": "^4.24.3",
+    "got": "^13.0.0",
+    "ts-proto": "^1.163.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.10",
+    "@typescript-eslint/parser": "^6.9.1",
+    "eslint": "^8.53.0",
+    "eslint-plugin-perfectionist": "^2.2.0",
+    "tsx": "^3.14.0",
+    "typescript": "^5.2.2"
+  }
+}
