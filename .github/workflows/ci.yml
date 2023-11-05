@@ -54,11 +54,20 @@ jobs:
           flavor: latest=true
           tags: type=sha
 
-      - name: Build and push Docker image
+      - name: Build and push Docker image (common)
         uses: docker/build-push-action@v4
-        if: steps.git-diff.outputs.diff
+        if: ${{ steps.git-diff.outputs.diff && matrix.package != 'monitor' }}
         with:
           context: '{{defaultContext}}:${{ matrix.package }}'
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Build and push Docker image (for monitor)
+        uses: docker/build-push-action@v4
+        if: ${{ steps.git-diff.outputs.diff && matrix.package == 'monitor' }}
+        with:
+          file: ${{ matrix.package }}/Dockerfile
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
