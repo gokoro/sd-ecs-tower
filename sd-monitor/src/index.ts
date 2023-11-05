@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import { FastifySSEPlugin } from 'fastify-sse-v2'
 
 import { isAppError } from './libs/error.js'
 import { routes } from './routes/index.js'
@@ -7,6 +8,7 @@ const PORT = 3000
 
 const fastify = Fastify({ logger: true })
 
+fastify.register(FastifySSEPlugin)
 fastify.register(routes)
 
 fastify.setErrorHandler((error, req, reply) => {

@@ -2,11 +2,24 @@ import type { WeightTypes } from '../libs/types.js'
 import type { WeightResponseSuccessType } from '../routes/weights/schema.js'
 
 import { AppError } from '../libs/error.js'
+import { trpc } from '../libs/trpc.js'
 import { civitai, huggingface } from '../libs/weight-provider.js'
 
 interface WeightsHandlerInput {
   type: WeightTypes
   weightUrl: string
+}
+
+interface WeightsApplyHandlerInputSSE {
+  ender: () => void
+  sender: (data: object) => void
+}
+
+interface WeightsApplyHandlerInput {
+  downloadUrl: string
+  filename: string
+  sse?: WeightsApplyHandlerInputSSE
+  type: WeightTypes
 }
 
 type ModelInterface = {
@@ -66,6 +79,22 @@ export const weightsHandler = async (
   }
 
   return model.data
+}
+
+export const weightsApplyHandler = async (input: WeightsApplyHandlerInput) => {
+  await new Promise<void>(async (resolve) => {
+    trpc.weights.onAddWeight.subscribe(undefined, {
+      onData(per) {
+        console.log('per:', per)
+        input.sse?.sender({ filename: input.filename, percentage: per })
+      },
+      onComplete() {
+        input.sse?.ender()
+        resolve()
+      },
+    })
+    await trpc.weights.addWeight.mutate(input)
+  })
 }
 
 class Model implements ModelInterface {

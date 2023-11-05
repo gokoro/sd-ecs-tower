@@ -19,6 +19,7 @@ export const WeightResponseSuccess = Type.Object({
 
 export const WeightApplyRequest = Type.Object({
   downloadUrl: Type.Required(Type.String()),
+  filename: Type.Required(Type.String()),
 })
 
 export type WeightRequestType = Static<typeof WeightRequest>

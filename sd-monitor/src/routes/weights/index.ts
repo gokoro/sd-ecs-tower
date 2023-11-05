@@ -1,14 +1,17 @@
 import type { FastifyPluginAsyncTypebox } from '../types.js'
 
-import { weightsHandler } from '../../handlers/weights.handler.js'
+import {
+  weightsApplyHandler,
+  weightsHandler,
+} from '../../handlers/weights.handler.js'
 import { weightTypes } from '../../libs/types.js'
 import {
   WeightApplyRequest,
-  WeightApplyRequestType,
+  type WeightApplyRequestType,
   WeightRequest,
-  WeightRequestType,
+  type WeightRequestType,
   WeightResponseSuccess,
-  WeightResponseSuccessType,
+  type WeightResponseSuccessType,
 } from './schema.js'
 
 export const weightsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
@@ -33,19 +36,35 @@ export const weightsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
       }
     )
 
-    fastify.post<{
-      Body: WeightApplyRequestType
+    fastify.get<{
+      Querystring: WeightApplyRequestType
     }>(
       `/${weightType}/apply`,
       {
         schema: {
-          body: WeightApplyRequest,
+          querystring: WeightApplyRequest,
         },
       },
       async (req, reply) => {
-        const { downloadUrl } = req.body
+        const { downloadUrl, filename } = req.query
 
-        // const output = await weightsHandler({ weightUrl })
+        const sender = (data: object) => {
+          reply.sse({ data: JSON.stringify(data) })
+        }
+
+        const ender = () => {
+          reply.sse({ event: 'close' })
+        }
+
+        await weightsApplyHandler({
+          type: weightType,
+          filename,
+          downloadUrl,
+          sse: {
+            sender,
+            ender,
+          },
+        })
       }
     )
   }

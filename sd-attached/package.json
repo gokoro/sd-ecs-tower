@@ -1,18 +1,9 @@
 {
-  "name": "@tower/server",
+  "name": "sd-attached",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.ts"
-  },
-  "dependencies": {
-    "@fastify/type-provider-typebox": "^3.5.0",
-    "@sinclair/typebox": "^0.31.22",
-    "@trpc/client": "^10.43.1",
-    "fastify": "^4.24.3",
-    "fastify-sse-v2": "^3.1.2",
-    "got": "^13.0.0",
-    "ws": "^8.14.2"
   },
   "devDependencies": {
     "@types/node": "^20.8.10",
@@ -22,5 +13,11 @@
     "eslint-plugin-perfectionist": "^2.2.0",
     "tsx": "^3.14.0",
     "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "@trpc/server": "^10.43.1",
+    "got": "^13.0.0",
+    "ws": "^8.14.2",
+    "zod": "^3.22.4"
   }
 }
