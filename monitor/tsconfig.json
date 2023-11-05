@@ -9,8 +9,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "paths": {
-      "@sd-attached/*": ["../sd-attached/src/*"]
+      "@sd-attached/*": ["../attached/src/*"]
     }
   },
-  "references": [{ "path": "../sd-attached" }]
+  "references": [{ "path": "../attached" }]
 }
