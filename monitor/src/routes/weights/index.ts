@@ -1,71 +1,138 @@
 import type { FastifyPluginAsyncTypebox } from '../types.js'
+import type {
+  WeightDeleteRequestType,
+  WeightDeleteResponseSuccessType,
+  WeightGetResponseType,
+  WeightIdParamType,
+  WeightPostRequestType,
+  WeightPostResponseSuccessType,
+  WeightProgressDeleteResponseSuccessType,
+} from './schema.js'
 
 import {
-  weightsApplyHandler,
-  weightsHandler,
+  weightsPostHandler,
+  weightsProgressDeleteHandler,
+  weightsProgressGetHandler,
 } from '../../handlers/weights.handler.js'
-import { weightTypes } from '../../libs/types.js'
 import {
-  WeightApplyRequest,
-  type WeightApplyRequestType,
-  WeightRequest,
-  type WeightRequestType,
-  WeightResponseSuccess,
-  type WeightResponseSuccessType,
+  WeightDeleteRequest,
+  WeightDeleteResponseSuccess,
+  WeightIdParam,
+  WeightPostRequest,
+  WeightPostResponseSuccess,
+  WeightProgressDeleteResponseSuccess,
 } from './schema.js'
 
 export const weightsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
-  for (const weightType of weightTypes) {
-    fastify.post<{
-      Body: WeightRequestType
-      Reply: WeightResponseSuccessType
-    }>(
-      `/${weightType}`,
-      {
-        schema: {
-          body: WeightRequest,
-          response: {
-            200: WeightResponseSuccess,
-          },
+  fastify.post<{
+    Body: WeightPostRequestType
+    Reply: WeightPostResponseSuccessType
+  }>(
+    `/`,
+    {
+      schema: {
+        body: WeightPostRequest,
+        response: {
+          200: WeightPostResponseSuccess,
         },
       },
-      async (req, reply) => {
-        const { weightUrl } = req.body
+    },
+    async (req, reply) => {
+      const { type, url, filename } = req.body
 
-        return await weightsHandler({ type: weightType, weightUrl })
-      }
-    )
+      const id = await weightsPostHandler({ type, url, filename })
 
-    fastify.get<{
-      Querystring: WeightApplyRequestType
-    }>(
-      `/${weightType}/apply`,
-      {
-        schema: {
-          querystring: WeightApplyRequest,
+      return { id }
+    }
+  )
+
+  // fastify.get<{
+  //   Reply: WeightGetResponseType
+  // }>(
+  //   `/`,
+  //   {
+  //     schema: {
+  //       body: WeightPostRequest,
+  //       response: {
+  //         200: WeightPostResponseSuccess,
+  //       },
+  //     },
+  //   },
+  //   async (req, reply) => {
+  //     return []
+  //     // return await weightsHandler({ type, weightUrl })
+  //   }
+  // )
+
+  fastify.delete<{
+    Body: WeightDeleteRequestType
+    Reply: WeightDeleteResponseSuccessType
+  }>(
+    `/:id`,
+    {
+      schema: {
+        body: WeightDeleteRequest,
+        response: {
+          200: WeightDeleteResponseSuccess,
         },
       },
-      async (req, reply) => {
-        const { downloadUrl, filename } = req.query
+    },
+    async (req, reply) => {
+      const { id } = req.body
 
-        const sender = (data: object) => {
-          reply.sse({ data: JSON.stringify(data) })
-        }
+      return { status: true }
+    }
+  )
 
-        const ender = () => {
-          reply.sse({ event: 'close' })
-        }
+  fastify.get<{
+    Params: WeightIdParamType
+  }>(
+    `/:id/progress`,
+    {
+      schema: {
+        params: WeightIdParam,
+      },
+    },
+    async (req, reply) => {
+      const { id } = req.params
 
-        await weightsApplyHandler({
-          type: weightType,
-          filename,
-          downloadUrl,
-          sse: {
-            sender,
-            ender,
-          },
-        })
+      const sender = (data: object) => {
+        reply.sse({ data: JSON.stringify(data) })
       }
-    )
-  }
+
+      const ender = () => {
+        reply.sse({ event: 'close' })
+      }
+
+      await weightsProgressGetHandler({
+        id,
+        sse: {
+          sender,
+          ender,
+        },
+      })
+    }
+  )
+
+  fastify.delete<{
+    Params: WeightIdParamType
+    Reply: WeightProgressDeleteResponseSuccessType
+  }>(
+    `/:id/progress`,
+    {
+      schema: {
+        params: WeightIdParam,
+        response: { 200: WeightProgressDeleteResponseSuccess },
+      },
+    },
+    async (req, reply) => {
+      const { id } = req.params
+
+      await weightsProgressDeleteHandler({
+        id,
+      })
+
+      return { status: true }
+    }
+  )
 }

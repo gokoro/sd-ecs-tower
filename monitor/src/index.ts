@@ -1,3 +1,4 @@
+import cors from '@fastify/cors'
 import Fastify from 'fastify'
 import { FastifySSEPlugin } from 'fastify-sse-v2'
 
@@ -9,7 +10,12 @@ const PORT = 3000
 const fastify = Fastify({ logger: true })
 
 fastify.register(FastifySSEPlugin)
-fastify.register(routes)
+
+if (process.env.NODE_ENV === 'development') {
+  fastify.register(cors)
+}
+
+await fastify.register(routes)
 
 fastify.setErrorHandler((error, req, reply) => {
   reply.statusCode = error.statusCode ?? 500

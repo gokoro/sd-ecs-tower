@@ -1,7 +1,33 @@
 {
-  "name": "@tower/client",
+  "name": "client",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@radix-ui/colors": "^3.0.0",
+    "@radix-ui/react-progress": "^1.0.3",
+    "@radix-ui/themes": "^2.0.0",
+    "@vanilla-extract/css": "^1.13.0",
+    "@vanilla-extract/next-plugin": "^2.3.1",
+    "ky": "^1.1.3",
+    "modern-normalize": "^2.0.0",
+    "next": "14.0.1",
+    "react": "^18",
+    "react-dom": "^18",
+    "zustand": "^4.4.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.0.1",
+    "typescript": "^5"
   }
 }

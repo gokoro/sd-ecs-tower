@@ -1,28 +1,61 @@
 import { Static, Type } from '@sinclair/typebox'
 
-export const WeightRequest = Type.Object({
-  weightUrl: Type.Required(Type.String()),
+import { weightTypes } from '../../libs/types.js'
+
+export const WeightPostRequest = Type.Object({
+  type: Type.Union(weightTypes.map((t) => Type.Literal(t))),
+  url: Type.String(),
+  filename: Type.String(),
 })
 
-export const WeightResponseSuccess = Type.Object({
-  name: Type.String(),
-  versions: Type.Array(
-    Type.Object({
-      versionId: Type.Number(),
-      name: Type.String(),
-      filename: Type.String(),
-      size: Type.Number(),
-      downloadUrl: Type.String(),
-    })
-  ),
+export const WeightPostResponseSuccess = Type.Object({
+  id: Type.String(),
 })
 
-export const WeightApplyRequest = Type.Object({
-  downloadUrl: Type.Required(Type.String()),
-  filename: Type.Required(Type.String()),
+export const WeightGetResponse = Type.Array(
+  Type.Object({
+    name: Type.String(),
+    versions: Type.Array(
+      Type.Object({
+        versionId: Type.Number(),
+        name: Type.String(),
+        filename: Type.String(),
+        size: Type.Number(),
+        downloadUrl: Type.String(),
+      })
+    ),
+  })
+)
+
+export const WeightDeleteRequest = Type.Object({
+  id: Type.String(),
 })
 
-export type WeightRequestType = Static<typeof WeightRequest>
-export type WeightApplyRequestType = Static<typeof WeightApplyRequest>
+export const WeightDeleteResponseSuccess = Type.Object({
+  status: Type.Boolean(),
+})
 
-export type WeightResponseSuccessType = Static<typeof WeightResponseSuccess>
+export const WeightIdParam = Type.Object({
+  id: Type.String(),
+})
+
+export const WeightProgressDeleteResponseSuccess = Type.Object({
+  status: Type.Boolean(),
+})
+
+export type WeightPostRequestType = Static<typeof WeightPostRequest>
+export type WeightPostResponseSuccessType = Static<
+  typeof WeightPostResponseSuccess
+>
+export type WeightGetResponseType = Static<typeof WeightGetResponse>
+
+export type WeightDeleteRequestType = Static<typeof WeightDeleteRequest>
+export type WeightDeleteResponseSuccessType = Static<
+  typeof WeightDeleteResponseSuccess
+>
+
+export type WeightIdParamType = Static<typeof WeightIdParam>
+
+export type WeightProgressDeleteResponseSuccessType = Static<
+  typeof WeightProgressDeleteResponseSuccess
+>

@@ -1,160 +1,65 @@
 import type { WeightTypes } from '../libs/types.js'
-import type { WeightResponseSuccessType } from '../routes/weights/schema.js'
 
-import { AppError } from '../libs/error.js'
 import { trpc } from '../libs/trpc.js'
-import { civitai, huggingface } from '../libs/weight-provider.js'
 
-interface WeightsHandlerInput {
-  type: WeightTypes
-  weightUrl: string
-}
-
-interface WeightsApplyHandlerInputSSE {
-  ender: () => void
-  sender: (data: object) => void
-}
-
-interface WeightsApplyHandlerInput {
-  downloadUrl: string
+interface WeightsPostHandlerInput {
   filename: string
-  sse?: WeightsApplyHandlerInputSSE
   type: WeightTypes
+  url: string
 }
 
-type ModelInterface = {
-  getCivitai: (id: string) => Promise<void>
-  getHuggingFace: (id: string) => Promise<void>
+interface WeightsProgressGetHandlerInputSSE {
+  ender: () => void
+  sender: (data: any) => void
 }
 
-enum WeightProvider {
-  civitai = 'CIVITAI',
-  huggingface = 'HUGGINGFACE',
+interface WeightsProgressGetHandlerInput {
+  id: string
+  sse: WeightsProgressGetHandlerInputSSE
 }
 
-const classifyWeightProvider = (url: string) => {
-  if (url.includes('civitai.com')) {
-    return WeightProvider.civitai
-  }
-
-  if (url.includes('huggingface.co')) {
-    return WeightProvider.huggingface
-  }
+interface WeightsProgressDeleteHandlerInput {
+  id: string
 }
 
-export const weightsHandler = async (
-  input: WeightsHandlerInput
-): Promise<WeightResponseSuccessType> => {
-  const assumedProvider = classifyWeightProvider(input.weightUrl)
+export const weightsPostHandler = async (
+  input: WeightsPostHandlerInput
+): Promise<string> => {
+  const { filename, type, url } = input
 
-  if (!assumedProvider) {
-    throw new AppError(400, "Requested provider isn't available.")
-  }
-
-  const model = new Model()
-
-  if (assumedProvider === WeightProvider.civitai) {
-    const matched = input.weightUrl.match(/\/models\/(\d+)/)
-
-    if (!matched)
-      throw new AppError(
-        400,
-        "ID of the model isn't included in the provided url."
-      )
-
-    const [, id] = matched
-
-    await model.getCivitai(id)
-  }
-
-  if (assumedProvider === WeightProvider.huggingface) {
-    const resolveRegex =
-      /https:\/\/huggingface\.co\/([^\/]+)\/([^\/]+)\/resolve\//g
-
-    const resolveUrl = resolveRegex.test(input.weightUrl)
-      ? input.weightUrl
-      : input.weightUrl.replace('blob', 'resolve')
-
-    await model.getHuggingFace(resolveUrl)
-  }
-
-  return model.data
-}
-
-export const weightsApplyHandler = async (input: WeightsApplyHandlerInput) => {
-  await new Promise<void>(async (resolve) => {
-    trpc.weights.onAddWeight.subscribe(undefined, {
-      onData(per) {
-        console.log('per:', per)
-        input.sse?.sender({ filename: input.filename, percentage: per })
-      },
-      onComplete() {
-        input.sse?.ender()
-        resolve()
-      },
-    })
-    await trpc.weights.addWeight.mutate(input)
+  return await trpc.weights.addWeight.mutate({
+    filename,
+    type,
+    downloadUrl: url,
   })
 }
 
-class Model implements ModelInterface {
-  private _data?: WeightResponseSuccessType
+export const weightsProgressGetHandler = async (
+  input: WeightsProgressGetHandlerInput
+) => {
+  const { id } = input
 
-  async getCivitai(id: string) {
-    const { name, modelVersions, type } = await civitai.getModelById(id)
-
-    this._data = {
-      name,
-      versions: modelVersions.map((v) => ({
-        name: v.name,
-        downloadUrl: v.files[0].downloadUrl,
-        filename: v.files[0].name,
-        size: v.files[0].sizeKB / (1024 * 1024 * 1024),
-        versionId: v.id,
-      })),
-    }
-  }
-
-  async getHuggingFace(url: string) {
-    const { contentDisposition, contentLength } =
-      await huggingface.getModelByUrl(url)
-
-    const matched = contentDisposition?.match(/filename="([^"]+)"/)
-
-    if (!matched) {
-      throw new AppError(
-        400,
-        "Any downloadable resource isn't found from the requested url."
-      )
-    }
-
-    let [, filename] = matched
-
-    const filesize = contentLength
-      ? parseInt(contentLength) / (1024 * 1024 * 1024)
-      : 0
-
-    this._data = {
-      name: filename,
-      versions: [
-        {
-          downloadUrl: url,
-          filename,
-          size: filesize,
-          name: filename,
-          versionId: -1,
+  await new Promise<void>(async (resolve) => {
+    trpc.weights.onAddWeight.subscribe(
+      { id },
+      {
+        onData(per) {
+          input.sse?.sender({ percentage: per })
         },
-      ],
-    }
-  }
+        onComplete() {
+          input.sse?.ender()
+          resolve()
+        },
+      }
+    )
+  })
+}
 
-  get data() {
-    if (!this._data) {
-      throw new Error(
-        "Either getCivitai or getHuggingFace haven't been called."
-      )
-    }
-
-    return this._data
-  }
+export const weightsProgressDeleteHandler = async (
+  input: WeightsProgressDeleteHandlerInput
+) => {
+  const { id } = input
+  return await trpc.weights.deleteWeightQueue.mutate({
+    id,
+  })
 }
