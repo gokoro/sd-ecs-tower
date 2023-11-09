@@ -15,7 +15,9 @@ if (process.env.NODE_ENV === 'development') {
   fastify.register(cors)
 }
 
-await fastify.register(routes)
+const prefix = process.env.PREFIX_PATH
+
+await fastify.register(routes, { prefix })
 
 fastify.setErrorHandler((error, req, reply) => {
   reply.statusCode = error.statusCode ?? 500
