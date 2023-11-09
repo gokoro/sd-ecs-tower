@@ -1,2 +1,5 @@
 export const attachedEndpoint = process.env.ATTACHED_ENDPOINT ?? ''
 export const attachedWsEndpoint = process.env.ATTACHED_WS_ENDPOINT ?? ''
+export const redisHost = process.env.REDIS_HOST ?? ''
+export const redisPort = process.env.REDIS_PORT ?? ''
+export const redisConnectionString = process.env.REDIS_CONNECTION_STRING ?? ''

@@ -14,16 +14,10 @@ export const WeightPostResponseSuccess = Type.Object({
 
 export const WeightGetResponse = Type.Array(
   Type.Object({
-    name: Type.String(),
-    versions: Type.Array(
-      Type.Object({
-        versionId: Type.Number(),
-        name: Type.String(),
-        filename: Type.String(),
-        size: Type.Number(),
-        downloadUrl: Type.String(),
-      })
-    ),
+    id: Type.String(),
+    filename: Type.String(),
+    type: Type.String(),
+    downloadUrl: Type.String(),
   })
 )
 

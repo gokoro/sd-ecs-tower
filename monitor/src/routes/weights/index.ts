@@ -10,6 +10,7 @@ import type {
 } from './schema.js'
 
 import {
+  weightsGetHandler,
   weightsPostHandler,
   weightsProgressDeleteHandler,
   weightsProgressGetHandler,
@@ -17,6 +18,7 @@ import {
 import {
   WeightDeleteRequest,
   WeightDeleteResponseSuccess,
+  WeightGetResponse,
   WeightIdParam,
   WeightPostRequest,
   WeightPostResponseSuccess,
@@ -39,6 +41,7 @@ export const weightsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     },
     async (req, reply) => {
       const { type, url, filename } = req.body
+      console.log('type, url, filename:', type, url, filename)
 
       const id = await weightsPostHandler({ type, url, filename })
 
@@ -46,23 +49,21 @@ export const weightsRoutes: FastifyPluginAsyncTypebox = async (fastify) => {
     }
   )
 
-  // fastify.get<{
-  //   Reply: WeightGetResponseType
-  // }>(
-  //   `/`,
-  //   {
-  //     schema: {
-  //       body: WeightPostRequest,
-  //       response: {
-  //         200: WeightPostResponseSuccess,
-  //       },
-  //     },
-  //   },
-  //   async (req, reply) => {
-  //     return []
-  //     // return await weightsHandler({ type, weightUrl })
-  //   }
-  // )
+  fastify.get<{
+    Reply: WeightGetResponseType
+  }>(
+    `/`,
+    {
+      schema: {
+        response: {
+          200: WeightGetResponse,
+        },
+      },
+    },
+    async () => {
+      return await weightsGetHandler()
+    }
+  )
 
   fastify.delete<{
     Body: WeightDeleteRequestType
