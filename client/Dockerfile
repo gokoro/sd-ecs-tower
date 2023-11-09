@@ -11,15 +11,8 @@ RUN corepack enable
 WORKDIR /app
 
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
-# RUN \
-#   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-#   elif [ -f package-lock.json ]; then npm ci; \
-#   elif [ -f pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
-#   else echo "Lockfile not found." && exit 1; \
-#   fi
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-lockfile
 
-# Rebuild the source code only when needed
 FROM base AS builder
 
 ENV NEXT_TELEMETRY_DISABLED 1
@@ -42,15 +35,14 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
 # Temporal disabled
 # COPY --from=builder /app/public ./public
 
-# RUN mkdir .next
-# RUN chown nextjs:nodejs .next
+RUN mkdir .next
+RUN chown nextjs:nodejs .next
 
 COPY --from=deps /app/node_modules /app/node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
