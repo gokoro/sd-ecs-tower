@@ -24,6 +24,8 @@ FROM base AS builder
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
+ENV NEXT_PUBLIC_TOWER_ENDPOINT=/tower/api
+
 WORKDIR /app
 
 COPY . .
@@ -40,7 +42,6 @@ ENV NEXT_TELEMETRY_DISABLED 1
 ENV PORT 3000
 ENV HOSTNAME "0.0.0.0"
 
-ENV NEXT_PUBLIC_TOWER_ENDPOINT=/tower/api
 
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
@@ -51,11 +52,9 @@ RUN adduser --system --uid 1001 nextjs
 # RUN mkdir .next
 # RUN chown nextjs:nodejs .next
 
-# COPY --from=deps /app/node_modules /app/node_modules
-COPY --from=builder --chown=nextjs:nodejs /app /app
-# COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
-# COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-# COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=deps /app/node_modules /app/node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 
