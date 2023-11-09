@@ -7,6 +7,14 @@ const env = z.string({
 const portEnv = z.number().default(4000)
 const wsPortEnv = z.number().default(4001)
 
+const redisHostEnv = z.string()
+const redisPortEnv = z.number().default(6379)
+
+export const redisHost = redisHostEnv.parse(process.env.REDIS_HOST)
+export const redisPort = redisPortEnv.parse(
+  parseInt(process.env.REDIS_PORT || '')
+)
+
 export const port = portEnv.parse(process.env.PORT)
 export const wsPort = wsPortEnv.parse(process.env.WS_PORT)
 
