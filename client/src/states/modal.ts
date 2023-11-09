@@ -16,12 +16,16 @@ export type VersionType = WeightResponseType['versions'][number]
 export interface MainModalState {
   isOpen: boolean
   url?: string
+  downloadProgress: number
   currentStep: number
   type: 'checkpoint' | 'lora' | 'lycoris' | 'textual-inversion' | 'vae'
   selectedVersion?: VersionType
+  id?: string
 }
 
 export interface MainModalAction {
+  setId: (id: string) => void
+  setProgress: (per: number) => void
   setModalOpen: () => void
   setModalClose: () => void
   setUrl: (url: string) => void
@@ -34,6 +38,7 @@ export interface MainModalAction {
 
 const initialModalState: MainModalState = {
   isOpen: false,
+  downloadProgress: 0,
   currentStep: 1,
   type: 'checkpoint',
 }
@@ -42,6 +47,9 @@ export const useMainModalStore = create<MainModalState & MainModalAction>(
   (set, get) => ({
     ...initialModalState,
     setUrl: (url) => set({ url }),
+    setId: (id) => set({ id }),
+    setProgress: (num) => set({ downloadProgress: num }),
+
     setModalOpen: () => set({ isOpen: true }),
     setModalClose: () => set({ isOpen: false }),
     increaseStep: () => set({ currentStep: get().currentStep + 1 }),

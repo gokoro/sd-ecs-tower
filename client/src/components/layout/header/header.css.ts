@@ -8,6 +8,9 @@ export const HeaderStyle = style({
   left: 0,
   padding: '0 1em',
   borderBottom: `1px solid ${vars.colors.gray3}`,
+  backgroundColor: '#FFFFFF00',
+  backdropFilter: 'blur(10px)',
+  opacity: '100%',
 })
 
 export const ContainerStyle = style({

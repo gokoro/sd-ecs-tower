@@ -69,6 +69,16 @@ const BackButton = () => {
   )
 }
 
+const CloseButton = () => {
+  const setClose = useMainModalStore((state) => state.setModalClose)
+
+  return (
+    <Button color="gray" variant="soft" onClick={setClose}>
+      Close
+    </Button>
+  )
+}
+
 const ButtonContainer = ({ children }: { children: React.ReactNode }) => (
   <div className={ButtonContainerStyle}>{children}</div>
 )
@@ -218,15 +228,16 @@ const ProcessModelStep = () => {
 }
 
 const DownloadInProgressStep = () => {
-  const { selectedVersion, type } = useMainModalStore()
-  const [progress, setProgress] = useState<number>(0)
-  const [id, setId] = useState<string>()
+  const { selectedVersion, type, id, setId, downloadProgress, setProgress } =
+    useMainModalStore()
 
   if (!selectedVersion) return null
 
   const { size, downloadUrl, filename } = selectedVersion
 
   useEffect(() => {
+    if (id) return
+
     towerServer
       .post('weights', { json: { type, url: downloadUrl, filename } })
       .then((res) => res.json<{ id: string }>())
@@ -253,11 +264,11 @@ const DownloadInProgressStep = () => {
         </div>
       </div>
       <div className={ProgressContainerStyle}>
-        <Progress progress={progress} />
-        <div className={ProgressSideStyle}>{progress}%</div>
+        <Progress progress={downloadProgress} />
+        <div className={ProgressSideStyle}>{downloadProgress}%</div>
       </div>
       <ButtonContainer>
-        <BackButton />
+        <CloseButton />
       </ButtonContainer>
     </div>
   )
