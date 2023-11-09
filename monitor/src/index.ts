@@ -31,6 +31,10 @@ fastify.setErrorHandler((error, req, reply) => {
   return error
 })
 
+fastify.get('/', () => {
+  return { status: true }
+})
+
 fastify
   .listen({ port: PORT, host: '0.0.0.0' })
   .then(() => console.log(`SD-ECS-TOWER is listning on port ${PORT}!`))
