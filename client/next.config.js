@@ -3,7 +3,7 @@ const withVanillaExtract = createVanillaExtractPlugin()
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: '/tower',
+  basePath: process.env.NODE_ENV === 'production' ? '/tower' : undefined,
   output: 'standalone',
 }
 
