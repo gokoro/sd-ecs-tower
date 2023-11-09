@@ -3,6 +3,7 @@ export const weightTypes = [
   'lora',
   'lycoris',
   'textual-inversion',
+  'vae',
 ] as const
 
 export type WeightTypes = (typeof weightTypes)[number]

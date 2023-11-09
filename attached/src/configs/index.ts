@@ -16,3 +16,4 @@ export const lycorisPath = env.parse(process.env.LYCORIS_PATH)
 export const textualInversionPath = env.parse(
   process.env.TEXTUAL_INVENSION_PATH
 )
+export const vaePath = env.parse(process.env.VAE_PATH)

@@ -10,7 +10,12 @@ import { ZodLiteral, z } from 'zod'
 import * as configs from '../../configs/index.js'
 import { publicProcedure, router } from '../../libs/trpc.js'
 
-type WeightType = 'checkpoint' | 'lora' | 'lycoris' | 'textual-inversion'
+type WeightType =
+  | 'checkpoint'
+  | 'lora'
+  | 'lycoris'
+  | 'textual-inversion'
+  | 'vae'
 
 interface WeightTypeStruct {
   pathToSave: string
@@ -75,6 +80,10 @@ const weightTypes: WeightTypeStruct[] = [
   {
     type: 'textual-inversion',
     pathToSave: configs.textualInversionPath,
+  },
+  {
+    type: 'vae',
+    pathToSave: configs.vaePath,
   },
 ]
 
