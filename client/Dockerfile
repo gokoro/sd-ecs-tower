@@ -15,10 +15,6 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 FROM base AS builder
 
-# Should be removed in the future
-RUN --mount=type=secret,id=SERVER_SIDE_TOWER_ENDPOINT \
-  export SERVER_SIDE_TOWER_ENDPOINT=$(cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT)
-
 ENV NEXT_TELEMETRY_DISABLED 1
 
 ENV NEXT_PUBLIC_TOWER_ENDPOINT=/tower/api
@@ -28,7 +24,10 @@ WORKDIR /app
 COPY . .
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-RUN pnpm build
+# Should be removed in the future
+RUN --mount=type=secret,id=SERVER_SIDE_TOWER_ENDPOINT \
+  SERVER_SIDE_TOWER_ENDPOINT=$(cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT) \
+  pnpm build
 
 FROM base AS runner
 WORKDIR /app
