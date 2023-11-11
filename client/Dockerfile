@@ -17,7 +17,7 @@ FROM base AS builder
 
 # Should be removed in the future
 RUN --mount=type=secret,id=SERVER_SIDE_TOWER_ENDPOINT \
-  cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT
+  export SERVER_SIDE_TOWER_ENDPOINT=$(cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT)
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
