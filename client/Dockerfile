@@ -16,7 +16,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 FROM base AS builder
 
 # Should be removed in the future
-RUN --mount=type=secret,id=github_token \
+RUN --mount=type=secret,id=SERVER_SIDE_TOWER_ENDPOINT \
   cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT
 
 ENV NEXT_TELEMETRY_DISABLED 1
