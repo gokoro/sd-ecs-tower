@@ -62,8 +62,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-        env:
-          SERVER_SIDE_TOWER_ENDPOINT: ${{ secrets.SERVER_SIDE_TOWER_ENDPOINT }}
+          secrets: |
+            "SERVER_SIDE_TOWER_ENDPOINT=${{ secrets.SERVER_SIDE_TOWER_ENDPOINT }}"
 
       - name: Build and push Docker image (for monitor)
         uses: docker/build-push-action@v4
