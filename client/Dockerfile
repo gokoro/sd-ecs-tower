@@ -17,7 +17,7 @@ FROM base AS builder
 
 # Should be removed in the future
 RUN --mount=type=secret,id=github_token \
-  cat /run/secrets/github_token
+  cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
