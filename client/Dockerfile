@@ -15,6 +15,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --prod --frozen-l
 
 FROM base AS builder
 
+RUN echo SERVER_SIDE_TOWER_ENDPOINT: $SERVER_SIDE_TOWER_ENDPOINT
+
 ENV NEXT_TELEMETRY_DISABLED 1
 
 ENV NEXT_PUBLIC_TOWER_ENDPOINT=/tower/api
