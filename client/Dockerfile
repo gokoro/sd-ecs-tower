@@ -26,7 +26,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Should be removed in the future
 RUN --mount=type=secret,id=SERVER_SIDE_TOWER_ENDPOINT \
-  SERVER_SIDE_TOWER_ENDPOINT=$(cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT) \
+  # SERVER_SIDE_TOWER_ENDPOINT=$(cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT) \
+  cat /run/secrets/SERVER_SIDE_TOWER_ENDPOINT > .env \
   pnpm build
 
 FROM base AS runner
