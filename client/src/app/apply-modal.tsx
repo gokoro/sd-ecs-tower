@@ -174,34 +174,6 @@ const ProcessModelStep = () => {
 
   return (
     <>
-      <Tabs.Root defaultValue="checkpoint">
-        <Tabs.List className={InjectedWeightTypeSelectStyle}>
-          <Tabs.Trigger
-            value="checkpoint"
-            onClick={() => handleTypeChange('checkpoint')}
-          >
-            Checkpoint
-          </Tabs.Trigger>
-          <Tabs.Trigger value="lora" onClick={() => handleTypeChange('lora')}>
-            LoRA
-          </Tabs.Trigger>
-          <Tabs.Trigger
-            value="lycoris"
-            onClick={() => handleTypeChange('lycoris')}
-          >
-            LyCORIS
-          </Tabs.Trigger>
-          <Tabs.Trigger
-            value="textual-inversion"
-            onClick={() => handleTypeChange('textual-inversion')}
-          >
-            Textual Inversion
-          </Tabs.Trigger>
-          <Tabs.Trigger value="vae" onClick={() => handleTypeChange('vae')}>
-            VAE
-          </Tabs.Trigger>
-        </Tabs.List>
-      </Tabs.Root>
       <ScrollArea
         type="always"
         scrollbars="vertical"

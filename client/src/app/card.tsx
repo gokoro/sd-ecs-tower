@@ -1,26 +1,73 @@
+'use client'
+
+import { BsTrash3 as TrashIcon } from 'react-icons/bs'
+import { GoStack as StackIcon } from 'react-icons/go'
+
 import {
-  CardDescription,
-  CardDivider,
-  CardStyle,
-  CardTitleContainer,
-  CardTitleText,
+  WeightCardDescription,
+  WeightCardDivider,
+  WeightCardHover,
+  WeightCardHoverIcon,
+  WeightCardHoverIconContainer,
+  WeightCardStatusCircle,
+  WeightCardStatusCircleType,
+  WeightCardStyle,
+  WeightCardContainer,
+  WeightCardTitleText,
+  WeightCardLabelContainer,
+  WeightCardLabel,
 } from './card.css'
 
-interface CardProps {
+import { AddCardContainer } from './card.css'
+import { useMainModalStore } from '@/states/modal'
+
+import type { MainModalState } from '@/states/modal'
+
+interface WeightCardProps {
   filename: string
   type: string
 }
 
-export const WeightCard = (props: CardProps) => {
+interface AddCardProps {
+  type: MainModalState['type']
+}
+
+export const WeightCard = (props: WeightCardProps) => {
   return (
-    <div className={CardStyle}>
-      <div className={CardTitleContainer}>
-        <div className={CardTitleText}>{props.filename}</div>
+    <div>
+      <div className={WeightCardStyle}>
+        <div className={WeightCardContainer}>
+          <div className={WeightCardTitleText}>{props.filename}</div>
+          <div className={WeightCardDescription}>
+            <div>{props.type}</div>
+          </div>
+          {/* <div
+          className={`${CardStatusCircle} ${CardStatusCircleType.downloading}`}
+        /> */}
+        </div>
+
+        {/* <div className={CardHover}>
+        <motion.div className={CardHoverIconContainer}>
+          <TrashIcon className={CardHoverIcon} />
+        </motion.div>
+      </div> */}
+        {/* <div className={CardDivider}></div> */}
       </div>
-      <div className={CardDivider}></div>
-      <div className={CardDescription}>
-        <div>{props.type}</div>
-      </div>
+    </div>
+  )
+}
+
+export const AddCard = ({ type }: AddCardProps) => {
+  const { setModalOpen, setType } = useMainModalStore()
+
+  const handleClick = () => {
+    setModalOpen()
+    setType(type)
+  }
+
+  return (
+    <div onClick={handleClick} className={AddCardContainer}>
+      +
     </div>
   )
 }

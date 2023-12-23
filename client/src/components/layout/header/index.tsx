@@ -7,8 +7,6 @@ import {
   ContainerSide,
 } from './header.css'
 
-import { ModalButton } from '@/app/apply-modal'
-
 export const Header = () => {
   return (
     <header className={HeaderStyle}>
@@ -16,9 +14,6 @@ export const Header = () => {
         <div className={ContainerHead}>
           <div className={ContainerHeadTitle}>Stable Diffusion WebUI</div>
           <div className={ContainerHeadSubTitle}>Tower</div>
-        </div>
-        <div className={ContainerSide}>
-          <ModalButton>+ Add</ModalButton>
         </div>
       </div>
     </header>
